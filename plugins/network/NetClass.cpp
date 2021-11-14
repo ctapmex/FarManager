@@ -389,7 +389,6 @@ int NetBrowser::GetFindData(PluginPanelItem** pPanelItem, size_t* pItemsNumber, 
 
 		*pPanelItem = {};
 		*pItemsNumber = 0;
-		TSaveScreen SS;
 
 		// get the list of connections, so that we can show mapped drive letters
 		if (!ConnectedList.Enumerate(RESOURCE_CONNECTED,RESOURCETYPE_DISK, 0, {}))
@@ -1354,7 +1353,6 @@ BOOL NetBrowser::GetResourceParent(NETRESOURCE& SrcRes, LPNETRESOURCE DstNetReso
 
 	LogNetResource(SrcRes);
 #endif
-	TSaveScreen ss;
 	BOOL Ret = FALSE;
 	NETRESOURCE nrOut[32]; // provide buffer space
 	NETRESOURCE* lpnrOut = &nrOut[0];
@@ -2345,7 +2343,6 @@ int NetBrowser::GotoComputer(const wchar_t* Dir)
 
 void NetBrowser::GotoLocalNetwork()
 {
-	TSaveScreen ss;
 	wchar_t ComputerName[MAX_PATH];
 	lstrcpy(ComputerName, L"\\\\");
 	DWORD ComputerNameLength = MAX_PATH - 3;

@@ -28,3 +28,8 @@ BOOL DlgCreateFolder(wchar_t* lpBuffer, int nBufferSize)
 	return res;
 }
 
+const wchar_t* GetMsg(int MsgId)
+{
+	return PsInfo.GetMsg(&MainGuid, MsgId);
+}
+
