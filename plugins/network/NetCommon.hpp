@@ -25,10 +25,11 @@ extern struct Options
 	int FavoritesFlags;
 	int RootDoublePoint;
 	int NavigateToDomains;
+
+	void Read();
 } Opt;
 
-extern PluginStartupInfo PsInfo;
-extern FarStandardFunctions FSF;
+
 extern NETRESOURCE CommonCurResource;
 extern LPNETRESOURCE PCommonCurResource;
 extern BOOL IsFirstRun;
@@ -48,9 +49,6 @@ const wchar_t* GetMsg(int MsgId);
 BOOL DlgCreateFolder(wchar_t* lpBuffer, int nBufferSize);
 
 #define ShowMessage(x) PsInfo.Message(&MainGuid, nullptr, FMSG_ALLINONE|FMSG_MB_OK, L"", reinterpret_cast<const wchar_t* const*>(x), 0,{})
-/* NO NEED THIS
-char* NextToken(char *szSource, char *szToken, int nBuff);
-*/
 
 #ifdef _MSC_VER
 #pragma warning(pop)

@@ -1,5 +1,6 @@
 ﻿#include <cstdlib>
 #include "NetCommon.hpp"
+#include "Network.hpp"
 #include "NetCfg.hpp"
 #include "NetFavorites.hpp"
 #include "NetClass.hpp"
@@ -457,9 +458,9 @@ int NetBrowser::GetFindData(PluginPanelItem** pPanelItem, size_t* pItemsNumber, 
 	return (TRUE);
 }
 
-void NetBrowser::FreeFindData(PluginPanelItem* PanelItem, int ItemsNumber)
+void NetBrowser::FreeFindData(PluginPanelItem* PanelItem, size_t ItemsNumber)
 {
-	for (int I = 0; I < ItemsNumber; I++)
+	for (size_t I = 0; I < ItemsNumber; I++)
 	{
 		free(const_cast<wchar_t*>(PanelItem[I].CustomColumnData[0]));
 		free(const_cast<wchar_t*>(PanelItem[I].CustomColumnData[1]));
@@ -501,7 +502,7 @@ int NetBrowser::ProcessEvent(intptr_t Event, void* /*Param*/)
 }
 
 
-int NetBrowser::DeleteFiles(PluginPanelItem* PanelItem, int ItemsNumber, OPERATION_MODES /*OpMode*/)
+int NetBrowser::DeleteFiles(PluginPanelItem* PanelItem, size_t ItemsNumber, OPERATION_MODES /*OpMode*/)
 {
 	if (CheckFavoriteItem(PCurResource))
 	{
@@ -510,7 +511,7 @@ int NetBrowser::DeleteFiles(PluginPanelItem* PanelItem, int ItemsNumber, OPERATI
 	}
 	else
 	{
-		for (int I = 0; I < ItemsNumber; I++)
+		for (size_t I = 0; I < ItemsNumber; I++)
 			if (PanelItem[I].CustomColumnNumber == 2 && PanelItem[I].CustomColumnData)
 			{
 				if (*PanelItem[I].CustomColumnData[0])

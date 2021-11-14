@@ -1,4 +1,5 @@
 ﻿#include "NetCfg.hpp"
+#include "Network.hpp"
 #include "NetCommon.hpp"
 #include "NetFavorites.hpp"
 #include "guid.hpp"
@@ -79,32 +80,19 @@ int Config()
 	return FALSE;
 }
 
-void WINAPI GetPluginInfoW(PluginInfo* Info)
+void Options::Read()
 {
-	Info->StructSize = sizeof(*Info);
-	Info->Flags = PF_FULLCMDLINE;
-	static const wchar_t* PluginMenuStrings[1];
-	static const wchar_t* DiskMenuStrings[1];
+	PluginSettings settings(MainGuid, PsInfo.SettingsControl);
 
-	if (Opt.AddToDisksMenu)
-	{
-		DiskMenuStrings[0] = GetMsg(MDiskMenuString);
-		Info->DiskMenu.Guids = &MenuGuid;
-		Info->DiskMenu.Strings = DiskMenuStrings;
-		Info->DiskMenu.Count = ARRAYSIZE(DiskMenuStrings);
-	}
-
-	PluginMenuStrings[0] = GetMsg(MNetMenu);
-
-	if (Opt.AddToPluginsMenu)
-	{
-		Info->PluginMenu.Guids = &MenuGuid;
-		Info->PluginMenu.Strings = PluginMenuStrings;
-		Info->PluginMenu.Count = ARRAYSIZE(PluginMenuStrings);
-	}
-
-	Info->PluginConfig.Guids = &MenuGuid;
-	Info->PluginConfig.Strings = PluginMenuStrings;
-	Info->PluginConfig.Count = ARRAYSIZE(PluginMenuStrings);
-	Info->CommandPrefix = L"net:netg";
+	Opt.AddToDisksMenu = settings.Get(0, StrAddToDisksMenu, 1);
+	Opt.AddToPluginsMenu = settings.Get(0, StrAddToPluginsMenu, 1);
+	Opt.LocalNetwork = settings.Get(0, StrLocalNetwork, TRUE);
+	Opt.HiddenShares = settings.Get(0, StrHiddenShares, 1);
+	Opt.ShowPrinters = settings.Get(0, StrShowPrinters, 0);
+	Opt.FullPathShares = settings.Get(0, StrFullPathShares, TRUE);
+	Opt.FavoritesFlags = settings.Get(0, StrFavoritesFlags, int(FAVORITES_DEFAULTS));
+	Opt.RootDoublePoint = settings.Get(0, StrNoRootDoublePoint, TRUE);
+	Opt.DisconnectMode = settings.Get(0, StrDisconnectMode, FALSE);
+	Opt.HiddenSharesAsHidden = settings.Get(0, StrHiddenSharesAsHidden, TRUE);
+	Opt.NavigateToDomains = settings.Get(0, StrNavigateToDomains, FALSE);
 }

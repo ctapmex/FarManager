@@ -1,4 +1,5 @@
 ﻿#include "NetCommon.hpp"
+#include "Network.hpp"
 #include "guid.hpp"
 
 const wchar_t* GetMsg(int MsgId)

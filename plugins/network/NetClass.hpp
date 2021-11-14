@@ -117,10 +117,10 @@ public:
 public:
 	void CreateFavSubFolder();
 	int GetFindData(PluginPanelItem** pPanelItem, size_t* pItemsNumber, OPERATION_MODES OpMode);
-	void FreeFindData(PluginPanelItem* PanelItem, int ItemsNumber);
+	void FreeFindData(PluginPanelItem* PanelItem, size_t ItemsNumber);
 	void GetOpenPanelInfo(OpenPanelInfo* Info);
 	int SetDirectory(const wchar_t* Dir, OPERATION_MODES OpMode);
-	int DeleteFiles(PluginPanelItem* PanelItem, int ItemsNumber, OPERATION_MODES OpMode);
+	int DeleteFiles(PluginPanelItem* PanelItem, size_t ItemsNumber, OPERATION_MODES OpMode);
 	int ProcessKey(const INPUT_RECORD* Rec);
 	int ProcessEvent(intptr_t Event, void* Param);
 	void SetOpenFromCommandLine(wchar_t* ShareName);
