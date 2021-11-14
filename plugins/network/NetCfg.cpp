@@ -2,6 +2,7 @@
 #include "Network.hpp"
 #include "NetCommon.hpp"
 #include "NetFavorites.hpp"
+#include "NetLng.hpp"
 #include "guid.hpp"
 #include <DlgBuilder.hpp>
 #include <PluginSettings.hpp>
@@ -42,20 +43,12 @@ int Config()
 
 	Builder.AddSeparator(MFavorites);
 	Builder.AddCheckbox(MUpbrowseToFavorites, &Opt.FavoritesFlags, FAVORITES_UPBROWSE_TO_FAVORITES);
+	// TODO restore ?
 	//	Builder.AddCheckbox(MCheckResource, &Opt.FavoritesFlags, FAVORITES_CHECK_RESOURCES);
 	Builder.AddOKCancel(MOk, MCancel);
 
 	if (Builder.ShowDialog())
 	{
-		PluginSettings settings(MainGuid, PsInfo.SettingsControl);
-		settings.Set(0, StrAddToDisksMenu, Opt.AddToDisksMenu);
-		settings.Set(0, StrAddToPluginsMenu, Opt.AddToPluginsMenu);
-		settings.Set(0, StrLocalNetwork, Opt.LocalNetwork);
-		settings.Set(0, StrShowPrinters, Opt.ShowPrinters);
-		settings.Set(0, StrFullPathShares, Opt.FullPathShares);
-		settings.Set(0, StrFavoritesFlags, Opt.FavoritesFlags);
-		settings.Set(0, StrNoRootDoublePoint, Opt.RootDoublePoint);
-
 		switch (HiddenSharesState)
 		{
 		case 0: // never show
@@ -71,8 +64,8 @@ int Config()
 			Opt.HiddenSharesAsHidden = FALSE;
 			break;
 		}
-		settings.Set(0, StrHiddenShares, Opt.HiddenShares);
-		settings.Set(0, StrHiddenSharesAsHidden, Opt.HiddenSharesAsHidden);
+
+		Opt.Write();
 
 		return TRUE;
 	}
@@ -90,9 +83,24 @@ void Options::Read()
 	Opt.HiddenShares = settings.Get(0, StrHiddenShares, 1);
 	Opt.ShowPrinters = settings.Get(0, StrShowPrinters, 0);
 	Opt.FullPathShares = settings.Get(0, StrFullPathShares, TRUE);
-	Opt.FavoritesFlags = settings.Get(0, StrFavoritesFlags, int(FAVORITES_DEFAULTS));
+	Opt.FavoritesFlags = settings.Get(0, StrFavoritesFlags, static_cast<int>(FAVORITES_DEFAULTS));
 	Opt.RootDoublePoint = settings.Get(0, StrNoRootDoublePoint, TRUE);
 	Opt.DisconnectMode = settings.Get(0, StrDisconnectMode, FALSE);
 	Opt.HiddenSharesAsHidden = settings.Get(0, StrHiddenSharesAsHidden, TRUE);
 	Opt.NavigateToDomains = settings.Get(0, StrNavigateToDomains, FALSE);
+}
+
+void Options::Write()
+{
+	PluginSettings settings(MainGuid, PsInfo.SettingsControl);
+
+	settings.Set(0, StrAddToDisksMenu, Opt.AddToDisksMenu);
+	settings.Set(0, StrAddToPluginsMenu, Opt.AddToPluginsMenu);
+	settings.Set(0, StrLocalNetwork, Opt.LocalNetwork);
+	settings.Set(0, StrHiddenShares, Opt.HiddenShares);
+	settings.Set(0, StrShowPrinters, Opt.ShowPrinters);
+	settings.Set(0, StrFullPathShares, Opt.FullPathShares);
+	settings.Set(0, StrFavoritesFlags, Opt.FavoritesFlags);
+	settings.Set(0, StrNoRootDoublePoint, Opt.RootDoublePoint);
+	settings.Set(0, StrHiddenSharesAsHidden, Opt.HiddenSharesAsHidden);
 }

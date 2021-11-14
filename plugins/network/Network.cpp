@@ -3,9 +3,12 @@
 #include "guid.hpp"
 #include "NetCfg.hpp"
 #include "NetFavorites.hpp"
+#include "NetLng.hpp"
+#include "NetCommon.hpp"
 
 PluginStartupInfo PsInfo;
 FarStandardFunctions FSF;
+BOOL IsFirstRun = TRUE;
 
 void WINAPI GetGlobalInfoW(GlobalInfo* Info)
 {

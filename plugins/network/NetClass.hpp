@@ -6,11 +6,6 @@
 #include <stdio.h>
 #endif
 
-// winnt.h
-#ifndef FILE_ATTRIBUTE_VIRTUAL
-#define FILE_ATTRIBUTE_VIRTUAL 0x00010000
-#endif
-
 class NetResourceList
 {
 private:

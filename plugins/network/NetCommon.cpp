@@ -1,19 +1,16 @@
 ﻿#include "NetCommon.hpp"
 #include "Network.hpp"
 #include "guid.hpp"
-#include "NetFavorites.hpp"
 
 Options Opt;
-
 
 NETRESOURCE CommonCurResource;
 NETRESOURCE* PCommonCurResource{};
 
-BOOL IsFirstRun = TRUE;
 
-BOOL DlgCreateFolder(wchar_t* lpBuffer, int nBufferSize)
+BOOL DlgCreateFolder(wchar_t* lpBuffer, size_t nBufferSize)
 {
-	BOOL res = (BOOL)PsInfo.InputBox(
+	BOOL res = static_cast<BOOL>(PsInfo.InputBox(
 		&MainGuid,
 		nullptr,
 		L"Make Folder",
@@ -24,7 +21,7 @@ BOOL DlgCreateFolder(wchar_t* lpBuffer, int nBufferSize)
 		nBufferSize,
 		{},
 		FIB_BUTTONS
-	);
+	));
 	return res;
 }
 

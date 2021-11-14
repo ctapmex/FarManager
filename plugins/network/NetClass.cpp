@@ -1,9 +1,12 @@
 ﻿#include <cstdlib>
+#include <windows.h>
+#include <lm.h>
 #include "NetCommon.hpp"
 #include "Network.hpp"
 #include "NetCfg.hpp"
 #include "NetFavorites.hpp"
 #include "NetClass.hpp"
+#include "NetLng.hpp"
 #include "guid.hpp"
 #include <PluginSettings.hpp>
 #include <DlgBuilder.hpp>
@@ -2495,7 +2498,7 @@ void NetBrowser::CreateFavSubFolder()
 
 	wchar_t buff[MAX_PATH];
 
-	if (DlgCreateFolder(buff, ARRAYSIZE(buff)))
+	if (DlgCreateFolder(buff, std::size(buff)))
 	{
 		if (!CreateSubFolder(PCurResource->lpRemoteName, buff))
 		{
