@@ -1,11 +1,6 @@
 ﻿#ifndef __NETCOMMON_HPP__
 #define __NETCOMMON_HPP__
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4121)
-#endif // _MSC_VER
-
 #include <windows.h>
 #include <lm.h>
 #include <plugin.hpp>
@@ -39,9 +34,5 @@ const wchar_t* GetMsg(int MsgId);
 BOOL DlgCreateFolder(wchar_t* lpBuffer, int nBufferSize);
 
 #define ShowMessage(x) PsInfo.Message(&MainGuid, nullptr, FMSG_ALLINONE|FMSG_MB_OK, L"", reinterpret_cast<const wchar_t* const*>(x), 0,{})
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 #endif // __NETCOMMON_HPP__
