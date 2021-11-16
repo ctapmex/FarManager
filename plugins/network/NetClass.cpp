@@ -15,25 +15,6 @@
 NetResourceList* CommonRootResources;
 BOOL SavedCommonRootResources = FALSE;
 
-static __int64 GetSetting(FARSETTINGS_SUBFOLDERS Root, const wchar_t* Name)
-{
-	__int64 result = 0;
-	FarSettingsCreate settings = {sizeof(FarSettingsCreate), FarGuid,INVALID_HANDLE_VALUE};
-	HANDLE Settings = PsInfo.SettingsControl(INVALID_HANDLE_VALUE, SCTL_CREATE, 0, &settings)?
-		                  settings.Handle :
-		                  nullptr;
-	if (Settings)
-	{
-		FarSettingsItem item = {sizeof(FarSettingsItem), static_cast<size_t>(Root), Name, FST_UNKNOWN, {}};
-		if (PsInfo.SettingsControl(Settings, SCTL_GET, 0, &item) && FST_QWORD == item.Type)
-		{
-			result = item.Number;
-		}
-		PsInfo.SettingsControl(Settings, SCTL_FREE, 0, {});
-	}
-	return result;
-}
-
 // -- NetResourceList --------------------------------------------------------
 #ifdef NETWORK_LOGGING
 FILE* NetBrowser::LogFile{};

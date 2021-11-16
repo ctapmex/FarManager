@@ -62,19 +62,7 @@ private:
 	wchar_t CmdLinePath[MAX_PATH]; // path passed when invoking us from command line
 	wchar_t m_PanelMode[2]; // current start panel mode
 
-#ifdef NETWORK_LOGGING
-		static FILE *LogFile;
-		static int LogFileRef;
-		static void LogNetResource(NETRESOURCE &Res);
-		static void OpenLogFile(const wchar_t *lpFileName);
-		static void CloseLogfile();
-#endif
-
-private:
 	void RemoveItems();
-#ifdef NETWORK_LOGGING
-		void LogData(const wchar_t* Data);
-#endif
 	static void DisconnectFromServer(NETRESOURCE* nr);
 	BOOL ChangeToDirectory(const wchar_t* Dir, OPERATION_MODES opmodes, bool IsExplicit);
 	void ManualConnect();
@@ -96,11 +84,19 @@ private:
 	BOOL AskMapDrive(wchar_t* NewLocalName, BOOL& Permanent);
 	void FileNames2Clipboard(BOOL ToCommandLine);
 
+#ifdef NETWORK_LOGGING
+	static FILE* LogFile;
+	static int LogFileRef;
+	static void LogNetResource(NETRESOURCE& Res);
+	static void OpenLogFile(const wchar_t* lpFileName);
+	static void CloseLogfile();
+	void LogData(const wchar_t* Data);
+#endif
+
 public:
 	NetBrowser();
 	~NetBrowser();
 
-public:
 	void CreateFavSubFolder();
 	int GetFindData(PluginPanelItem** pPanelItem, size_t* pItemsNumber, OPERATION_MODES OpMode);
 	void FreeFindData(PluginPanelItem* PanelItem, size_t ItemsNumber);
