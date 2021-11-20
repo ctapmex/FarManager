@@ -20,7 +20,6 @@ public:
 	NetResourceList& operator=(NetResourceList& other);
 	static wchar_t* CopyText(const wchar_t* Text);
 
-	static void InitNetResource(NETRESOURCE& Res);
 	static void DeleteNetResource(NETRESOURCE& Res);
 	static void CopyNetResource(NETRESOURCE& Dest, const NETRESOURCE& Src);
 
@@ -53,12 +52,12 @@ private:
 	NetResourceList ConnectedList; // list of resources mapped to local drives
 	NetResourceList RootResources; // stack of resources above the current level
 	// (used in non-MS Windows networks only)
-	NETRESOURCE CurResource; // NETRESOURCE describing the current location
+	NETRESOURCE CurResource = {}; // NETRESOURCE describing the current location
 	NETRESOURCE* PCurResource; // points to CurResource or nullptr (if at root)
 
-	BOOL ChangeDirSuccess;
-	BOOL OpenFromFilePanel;
-	int ReenterGetFindData;
+	BOOL ChangeDirSuccess = TRUE;
+	BOOL OpenFromFilePanel = FALSE;
+	int ReenterGetFindData = 0;
 	wchar_t CmdLinePath[MAX_PATH]; // path passed when invoking us from command line
 	wchar_t m_PanelMode[2]; // current start panel mode
 

@@ -91,15 +91,7 @@ void NetResourceList::DeleteNetResource(NETRESOURCE& Res)
 
 wchar_t* NetResourceList::CopyText(const wchar_t* Text)
 {
-	return Text? wcsdup(Text) : nullptr;
-}
-
-void NetResourceList::InitNetResource(NETRESOURCE& Res)
-{
-	Res.lpRemoteName = {};
-	Res.lpLocalName = {};
-	Res.lpComment = {};
-	Res.lpProvider = {};
+	return Text? _wcsdup(Text) : nullptr;
 }
 
 void NetResourceList::CopyNetResource(NETRESOURCE& Dest, const NETRESOURCE& Src)
@@ -200,10 +192,6 @@ NetBrowser::NetBrowser()
 		PluginSettings settings(MainGuid, PsInfo.SettingsControl);
 		settings.Get(0, StrPanelMode, m_PanelMode,ARRAYSIZE(m_PanelMode), L"3");
 	}
-	NetResourceList::InitNetResource(CurResource);
-	ReenterGetFindData = 0;
-	ChangeDirSuccess = TRUE;
-	OpenFromFilePanel = FALSE;
 
 	if (SavedCommonRootResources)
 	{
@@ -418,12 +406,12 @@ int NetBrowser::GetFindData(PluginPanelItem** pPanelItem, size_t* pItemsNumber, 
 		memset(&NewPanelItem[CurItemPos], 0, sizeof(PluginPanelItem));
 		GetLocalName(NetList[I].lpRemoteName, LocalName);
 		LPTSTR* CustomColumnData = (LPTSTR*)malloc(sizeof(LPTSTR) * 2);
-		CustomColumnData[0] = wcsdup(LocalName);
-		CustomColumnData[1] = wcsdup(Comment);
+		CustomColumnData[0] = _wcsdup(LocalName);
+		CustomColumnData[1] = _wcsdup(Comment);
 		NewPanelItem[CurItemPos].CustomColumnData = CustomColumnData;
 		NewPanelItem[CurItemPos].CustomColumnNumber = 2;
-		NewPanelItem[CurItemPos].FileName = wcsdup(RemoteName);
-		NewPanelItem[CurItemPos].Description = wcsdup(Comment);
+		NewPanelItem[CurItemPos].FileName = _wcsdup(RemoteName);
+		NewPanelItem[CurItemPos].Description = _wcsdup(Comment);
 		DWORD attr = FILE_ATTRIBUTE_DIRECTORY;
 
 		if (NetList[I].dwType == RESOURCETYPE_PRINT)
@@ -914,8 +902,7 @@ int NetBrowser::SetDirectory(const wchar_t* Dir, OPERATION_MODES OpMode)
 
 		if (IsMSNetResource(*PCurResource))
 		{
-			NETRESOURCE nrParent;
-			NetResourceList::InitNetResource(nrParent);
+			NETRESOURCE nrParent{};
 
 			if (!GetResourceParent(*PCurResource, &nrParent))
 				PCurResource = {};
@@ -1262,8 +1249,6 @@ BOOL NetBrowser::GetDfsParent(const NETRESOURCE &SrcRes, NETRESOURCE &Parent)
 
 BOOL NetBrowser::GetResourceInfo(wchar_t* SrcName, LPNETRESOURCE DstNetResource)
 {
-	NETRESOURCE nr = {0};
-
 #ifdef NETWORK_LOGGING
 
 	if (LogFile)
@@ -1274,6 +1259,7 @@ BOOL NetBrowser::GetResourceInfo(wchar_t* SrcName, LPNETRESOURCE DstNetResource)
 	NETRESOURCE* lpnrOut = &nrOut[0];
 	DWORD cbBuffer = sizeof(nrOut);
 	LPTSTR pszSystem{}; // pointer to variable-length strings
+	NETRESOURCE nr{};
 	nr.dwDisplayType = RESOURCEDISPLAYTYPE_GENERIC;
 	nr.dwScope = RESOURCE_GLOBALNET;
 	nr.dwType = RESOURCETYPE_ANY;
@@ -1487,7 +1473,7 @@ int NetBrowser::ProcessKey(const INPUT_RECORD* Rec)
 			PanelInfo PInfo = {sizeof(PanelInfo)};
 			PsInfo.PanelControl(this, FCTL_GETPANELINFO, 0, &PInfo);
 
-			for (int I = 0; I < (int)PInfo.SelectedItemsNumber; I++)
+			for (size_t I = 0; I < PInfo.SelectedItemsNumber; ++I)
 			{
 				const wchar_t* pRemoteName{};
 				size_t Size = PsInfo.PanelControl(this, FCTL_GETSELECTEDPANELITEM, I, {});
@@ -2229,8 +2215,7 @@ void NetBrowser::SetOpenFromCommandLine(wchar_t* ShareName)
 
 BOOL NetBrowser::SetOpenFromFilePanel(wchar_t* ShareName)
 {
-	NETRESOURCE nr;
-	NetResourceList::InitNetResource(nr);
+	NETRESOURCE nr{};
 
 	if (!GetResourceInfo(ShareName, &nr))
 		return FALSE;
@@ -2270,8 +2255,7 @@ int NetBrowser::GotoComputer(const wchar_t* Dir)
 	}
 
 	CharUpper(ComputerName);
-	NETRESOURCE res;
-	NetResourceList::InitNetResource(res);
+	NETRESOURCE res{};
 
 	if (!GetResourceInfo(ComputerName, &res))
 		return FALSE;
@@ -2334,22 +2318,18 @@ void NetBrowser::GotoLocalNetwork()
 	if (!GetComputerName(ComputerName + 2, &ComputerNameLength))
 		return;
 
-	NETRESOURCE res;
-	NetResourceList::InitNetResource(res);
+	NETRESOURCE res{};
 
 	if (!GetResourceInfo(ComputerName, &res) || !IsMSNetResource(res))
 		return;
 
-	NETRESOURCE parent;
-	NetResourceList::InitNetResource(parent);
+	NETRESOURCE parent{};
 
 	if (!GetResourceParent(res, &parent))
 		return;
 
 	NetResourceList::CopyNetResource(CurResource, parent);
 	PCurResource = &CurResource;
-	PsInfo.PanelControl(this, FCTL_UPDATEPANEL, 0, {});
-	PsInfo.PanelControl(this, FCTL_REDRAWPANEL, 0, {});
 }
 
 
@@ -2362,7 +2342,7 @@ void NetBrowser::SetCursorToShare(wchar_t* Share)
 	if (PInfo.ItemsNumber)
 	{
 		// prevent recursion
-		for (int i = 0; i < (int)PInfo.ItemsNumber; i++)
+		for (size_t i = 0; i < PInfo.ItemsNumber; i++)
 		{
 			wchar_t szAnsiName[MAX_PATH];
 			size_t Size = PsInfo.PanelControl(this, FCTL_GETPANELITEM, i, {});
@@ -2388,12 +2368,6 @@ void NetBrowser::SetCursorToShare(wchar_t* Share)
 	}
 }
 
-
-void WINAPI ExitFARW(const ExitInfo* Info)
-{
-	delete CommonRootResources;
-	NetResourceList::DeleteNetResource(CommonCurResource);
-}
 
 void NetBrowser::RemoveItems()
 {
@@ -2452,7 +2426,7 @@ void NetBrowser::RemoveItems()
 	if ((p > szName) && (p[-1] != L'\\'))
 		*p++ = L'\\';
 
-	for (int i = 0; i < (int)PInfo.SelectedItemsNumber; i++)
+	for (size_t i = 0; i < PInfo.SelectedItemsNumber; i++)
 	{
 		size_t Size = PsInfo.PanelControl(this, FCTL_GETSELECTEDPANELITEM, i, {});
 		PluginPanelItem* PPI = (PluginPanelItem*)malloc(Size);

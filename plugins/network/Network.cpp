@@ -28,8 +28,7 @@ void WINAPI SetStartupInfoW(const PluginStartupInfo* Info)
 	PsInfo.FSF = &FSF;
 
 	Opt.Read();
-	CommonRootResources = new NetResourceList;
-	NetResourceList::InitNetResource(CommonCurResource);
+	CommonRootResources = new NetResourceList{};
 }
 
 void WINAPI GetPluginInfoW(PluginInfo* Info)
@@ -200,4 +199,10 @@ intptr_t WINAPI ProcessPanelEventW(const ProcessPanelEventInfo* Info)
 intptr_t WINAPI ConfigureW(const ConfigureInfo* Info)
 {
 	return Config();
+}
+
+void WINAPI ExitFARW(const ExitInfo* Info)
+{
+	delete CommonRootResources;
+	NetResourceList::DeleteNetResource(CommonCurResource);
 }
